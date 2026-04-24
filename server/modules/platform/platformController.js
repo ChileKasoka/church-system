@@ -63,6 +63,7 @@ export const loginPlatformAdmin = async (req, res) => {
         id: admin.id,
         email: admin.email,
         is_super_admin: admin.is_super_admin,
+        organization_id: admin.organization_id,
         role_id: role.id,
         role: role.name,
         status: admin.status,

@@ -31,20 +31,28 @@ const BudgetController = {
   },
 
   // Create a new budget
-  async create(req, res) {
-    try {
-      const created = await Budget.create({
+async create(req, res) {
+  try {
+    const created = await Budget.create(
+      {
         ...req.body,
         organization_id: req.auth.organization_id,
-      });
-      return res.status(201).json(created);
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-  },
+      },
+      {
+        user_id: req.auth.user_id, // 👈 pull from JWT
+        ip_address: req.ip,
+        user_agent: req.headers["user-agent"],
+      }
+    );
 
-  // Update a budget by ID (scoped to org)
- async update(req, res) {
+    return res.status(201).json(created);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+},
+
+
+async update(req, res) {
   try {
     const { id } = req.params;
     const orgId = req.auth?.organization_id;
@@ -53,13 +61,21 @@ const BudgetController = {
       return res.status(400).json({ error: "Organization ID is required" });
     }
 
-    const updated = await Budget.update(id, {
-      ...req.body,
-      organization_id: orgId, // 👈 VERY IMPORTANT
-    });
+    const updated = await Budget.update(
+      id,
+      {
+        ...req.body,
+        organization_id: orgId, // 👈 keep this
+      },
+      {
+        user_id: req.auth.sub, // 👈 add this
+        ip_address: req.ip,
+        user_agent: req.headers["user-agent"],
+      }
+    );
 
     if (!updated) {
-      return res.status(404).json({ message: 'Budget not found' });
+      return res.status(404).json({ message: "Budget not found" });
     }
 
     return res.json(updated);
