@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import pkg from 'pg';
 
+import auditRoutes from './modules/audit_tail/auditRoutes.js'
 import userRoutes from './modules/user/userRoutes.js';
 import staffRoutes from './modules/hr/staff/staffRoutes.js';
 import membersRoutes from './modules/member/memberRoutes.js';
@@ -101,7 +102,7 @@ export { pool };
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/audits", auditRoutes);
 app.use("/api/platform", platformRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use('/api/role_permissions', verifyJWT, rolePermissionRoutes);
