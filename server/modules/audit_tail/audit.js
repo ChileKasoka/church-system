@@ -85,7 +85,7 @@ const AuditLog = {
 
   // ✅ main query
   const dataQuery = `
-    SELECT a.*, u.name as user_name
+    SELECT a.*, u.first_name as user_name
     FROM audit_trail a
     LEFT JOIN users u ON u.id = a.user_id
     WHERE ${whereClause}
